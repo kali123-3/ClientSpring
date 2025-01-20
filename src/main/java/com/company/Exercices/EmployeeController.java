@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @Tag(name = "Tutorial", description = "Tutorial management APIs")
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/employees")
 public class EmployeeController {
 
     @Autowired
@@ -28,6 +29,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "Greeting successfully generated")
     })
     @PostMapping
+    @RolesAllowed({"ROLE_HR","ROLE_ADMIN"})
     public ResponseEntity<Employee> createOrUpdateEmployee(@RequestBody Employee employee) {
         Employee savedEmployee = employeeService.createOrUpdateEmployee(employee);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
@@ -39,6 +41,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "Greeting successfully generated")
     })
     @GetMapping
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
@@ -46,6 +49,7 @@ public class EmployeeController {
 
     // Get Employee by ID
     @GetMapping("/{id}")
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long id) {
         Optional<Employee> employee = employeeService.getEmployeeById(id);
         return employee.map(emp -> new ResponseEntity<>(emp, HttpStatus.OK))
@@ -54,6 +58,7 @@ public class EmployeeController {
 
     // Delete Employee by ID
     @DeleteMapping("/{id}")
+    @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Long id) {
         Optional<Employee> employee = employeeService.getEmployeeById(id);
         if (employee.isPresent()) {

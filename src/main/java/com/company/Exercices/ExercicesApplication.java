@@ -19,6 +19,7 @@ public class ExercicesApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		this.userRepository.save(new User("admin", "admin", "admin"));
 	}
+
 }
 
 
